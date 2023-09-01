@@ -88,4 +88,33 @@ spotifyRouter.get("/callback", function (req, res) {
   }
 });
 
+spotifyRouter.get("/isLogged", async function (req, res) {
+  try {
+    if (req.session.access_token) {
+      res.send({
+        access_token: req.session.access_token,
+        expires_at: req.session.expires_at,
+      });
+    } else {
+      res.send(false);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+spotifyRouter.get("/logout", async function (req, res) {
+  try {
+    res.clearCookie(
+      "connect.sid",
+      process.env.NODE_ENV === "production"
+        ? { sameSite: "none", secure: true }
+        : ""
+    );
+    res.status(202).send("logged out successfully");
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 module.exports = spotifyRouter;
